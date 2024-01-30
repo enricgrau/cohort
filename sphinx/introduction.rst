@@ -1,9 +1,12 @@
-# cohort
+============
+Introduction
+============
 
-Cohort matrix plotting with Python from Excel file ``data.xlsx``.
+Simple plotting of cohort matrix from Excel file ``data.xlsx``.
 Any other data can be sued as long as it is transformed ino a pandas frame.
 
-# Quickstart
+Quickstart
+----------
 
 1. Create working directory
 

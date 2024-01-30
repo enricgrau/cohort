@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>main &mdash; documentación de cohort - </title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/translations.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            cohort
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main.html">Cohort plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../example.html">Example</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">cohort</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">main</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para main</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<div class="viewcode-block" id="cargar_datos_cohorte"><a class="viewcode-back" href="../main.html#main.cargar_datos_cohorte">[documentos]</a><span class="k">def</span> <span class="nf">cargar_datos_cohorte</span><span class="p">(</span><span class="n">dir_archivo</span><span class="p">,</span> <span class="n">nombre_hoja</span><span class="p">,</span> <span class="n">columna_id_cliente</span><span class="p">,</span> <span class="n">columna_fecha_transaccion</span><span class="p">,</span> <span class="n">columna_datos</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extrae y transforma los datos de transacciones de un archivo Excel en una matriz de cohortes.</span>
+<span class="sd">    La función carga la hoja especificada, prepara los datos y crea una matriz donde cada fila</span>
+<span class="sd">    representa una cohorte (mes de la primera compra) y cada columna los meses desde la primera compra.</span>
+<span class="sd">    Los valores en la matriz muestran el número de clientes únicos que realizaron una compra en ese</span>
+<span class="sd">    mes particular desde su primera compra.</span>
+
+<span class="sd">    :type dir_archivo: str</span>
+<span class="sd">    :param dir_archivo: Directorio del archivo Excel que contiene los datos de transacciones</span>
+
+<span class="sd">    :type nombre_hoja: str</span>
+<span class="sd">    :param nombre_hoja: Nombre de la hoja en el archivo Excel a procesar</span>
+
+<span class="sd">    :type columna_id_cliente: str</span>
+<span class="sd">    :param columna_id_cliente: Nombre de la columna que contiene los ID de los clientes</span>
+
+<span class="sd">    :type columna_fecha_transaccion: str</span>
+<span class="sd">    :param columna_fecha_transaccion: Nombre de la columna que contiene las fechas de las transacciones</span>
+
+<span class="sd">    :type columna_datos: str</span>
+<span class="sd">    :param columna_datos: Nombre de la columna que contiene los datos a analizar</span>
+
+<span class="sd">    :returns: Un DataFrame que representa la matriz de cohortes</span>
+<span class="sd">    :rtype: pandas.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Cargar la hoja especificada del archivo Excel</span>
+    <span class="n">transacciones</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">dir_archivo</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="n">nombre_hoja</span><span class="p">)</span>
+
+    <span class="c1"># Asegurar que las columnas necesarias estén presentes</span>
+    <span class="k">if</span> <span class="n">columna_id_cliente</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">transacciones</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="n">columna_fecha_transaccion</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">transacciones</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="n">columna_datos</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">transacciones</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Las columnas especificadas no se encuentran en los datos&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Formatear y limpiar los datos</span>
+    <span class="n">transacciones</span> <span class="o">=</span> <span class="n">transacciones</span><span class="p">[[</span><span class="n">columna_id_cliente</span><span class="p">,</span> <span class="n">columna_fecha_transaccion</span><span class="p">,</span> <span class="n">columna_datos</span><span class="p">]]</span>
+    <span class="n">transacciones</span> <span class="o">=</span> <span class="n">transacciones</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="n">transacciones</span><span class="p">[</span><span class="n">columna_fecha_transaccion</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">transacciones</span><span class="p">[</span><span class="n">columna_fecha_transaccion</span><span class="p">])</span>
+    <span class="n">transacciones</span><span class="p">[</span><span class="s1">&#39;mes_transaccion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">transacciones</span><span class="p">[</span><span class="n">columna_fecha_transaccion</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">to_period</span><span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Determinar el grupo de cohorte para cada cliente</span>
+    <span class="n">primera_transaccion</span> <span class="o">=</span> <span class="n">transacciones</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">columna_id_cliente</span><span class="p">)[</span><span class="s1">&#39;mes_transaccion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="n">primera_transaccion</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;cohorte&#39;</span>
+    <span class="n">transacciones</span> <span class="o">=</span> <span class="n">transacciones</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">primera_transaccion</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span> <span class="n">on</span><span class="o">=</span><span class="n">columna_id_cliente</span><span class="p">)</span>
+
+    <span class="c1"># Calcular la diferencia en meses para cada transacción</span>
+    <span class="n">transacciones</span><span class="p">[</span><span class="s1">&#39;diferencia_mes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">transacciones</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;mes_transaccion&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;cohorte&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Crear la matriz de cohorte</span>
+    <span class="n">matriz_cohorte</span> <span class="o">=</span> <span class="n">transacciones</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;cohorte&#39;</span><span class="p">,</span> <span class="s1">&#39;diferencia_mes&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">n_clientes</span><span class="o">=</span><span class="p">(</span><span class="n">columna_id_cliente</span><span class="p">,</span> <span class="s1">&#39;nunique&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="n">matriz_cohorte</span> <span class="o">=</span> <span class="n">matriz_cohorte</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;cohorte&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;diferencia_mes&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;n_clientes&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">matriz_cohorte</span></div>
+
+
+<div class="viewcode-block" id="graficar_matriz_cohorte"><a class="viewcode-back" href="../main.html#main.graficar_matriz_cohorte">[documentos]</a><span class="k">def</span> <span class="nf">graficar_matriz_cohorte</span><span class="p">(</span><span class="n">matriz_cohorte</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="s1">&#39;Reds&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Grafica una matriz de cohortes utilizando los datos desde `cargar_datos_cohorte`.</span>
+<span class="sd">    Cada celda en el mapa de calor muestra el número de clientes únicos que realizaron una compra</span>
+<span class="sd">    en un mes determinado desde su primera compra.</span>
+
+<span class="sd">    :type matriz_cohorte: pandas.DataFrame</span>
+<span class="sd">    :param matriz_cohorte: DataFrame que representa la matriz de cohortes</span>
+
+<span class="sd">    :returns: No retorna nada, solo muestra un gráfico.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+    <span class="n">cax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="n">matriz_cohorte</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">colormap</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Análisis de Cohortes&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Cohorte (Mes de Primera Compra)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Meses Desde la Primera Compra&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Nombre de los cohortes</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">matriz_cohorte</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">matriz_cohorte</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m&#39;</span><span class="p">))</span>
+
+    <span class="c1"># Meses desde la compra</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">matriz_cohorte</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">matriz_cohorte</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Agregar valores</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndenumerate</span><span class="p">(</span><span class="n">matriz_cohorte</span><span class="p">):</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2024, Enric Grau-Luque.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
