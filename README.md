@@ -1,6 +1,8 @@
 # cohort
 
-Cohort matrix plotting with Python from Excel file ``data.xlsx``.
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10600755.svg)](https://doi.org/10.5281/zenodo.10600755)
+
+Cohort analysis and matrix plotting with Python from Excel file ``data.xlsx``.
 Any other data can be sued as long as it is transformed ino a pandas frame.
 
 See the documentation here: https://enricgrau.github.io/cohort/
@@ -21,4 +23,4 @@ See the documentation here: https://enricgrau.github.io/cohort/
 
         pip install -r requirements.txt
 
-5. Ready to use. ``example.py`` contains the use of the functions, ``main.py`` contain the used functions.
+5. Ready to use. ``example.py`` contains the use of the functions, ``main.py`` contains the used functions.
